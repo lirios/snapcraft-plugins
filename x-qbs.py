@@ -162,9 +162,11 @@ class QbsPlugin(snapcraft.BasePlugin):
         env['QML_IMPORT_PATH'] = self._snap_path + '/lib/qt5/qml'
         env['QML2_IMPORT_PATH'] = self._snap_path + '/lib/qt5/qml'
         env['LD_LIBRARY_PATH'] = self._snap_path + '/lib/qt5/lib:' + \
+                                 self._snap_path + '/usr/lib:' + \
                                  self._snap_path + '/usr/local/lib:' + \
                                  self._snap_path + '/usr/lib/x86_64-linux-gnu:' +\
                                  self._snap_path + '/lib/x86_64-linux-gnu'
+        env['LIBRARY_PATH'] = env['LD_LIBRARY_PATH']
         env['PATH'] = self._snap_path + '/usr/bin/:' \
                       + self._snap_path + '/usr/local/bin:' \
                       + self._snap_path + '/lib/qt5/bin:' + \
