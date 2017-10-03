@@ -127,7 +127,7 @@ class QbsPlugin(snapcraft.BasePlugin):
         # Add custom search paths
         self.run([
             'qbs', 'config', 'preferences.qbsSearchPaths',
-            '{}/share/qbs'.format(self._snap_path)
+            '{}/usr/share/qbs'.format(self._snap_path)
         ], env=env)
 
         # Switch buildprofile to clang if required
@@ -145,21 +145,6 @@ class QbsPlugin(snapcraft.BasePlugin):
                   '-j', str(self.options.qbs_jobs or multiprocessing.cpu_count()),
                   self.options.qbs_build_variant,
                   'qbs.installRoot:' + self.installdir,
-                  'cpp.libraryPaths:["{}","{}","{}"]'.format(
-                      '{}/lib'.format(self._snap_path),
-                      '{}/lib/x86_64-linux-gnu'.format(self._snap_path),
-                      '{}/usr/lib/x86_64-linux-gnu'.format(self._snap_path)
-                  ),
-                  'cpp.includePaths:["{}","{}","{}","{}","{}","{}","{}","{}"]'.format(
-                      '{}/include'.format(self._snap_path),
-                      '{}/usr/include'.format(self._snap_path),
-                      '{}/include/KF5/Solid'.format(self._snap_path),
-                      '{}/include/KF5/NetworkManagerQt'.format(self._snap_path),
-                      '{}/include/KF5/ModemManagerQt'.format(self._snap_path),
-                      '{}/include/KF5/KWallet'.format(self._snap_path),
-                      '{}/include/KF5'.format(self._snap_path),
-                      '{}/include/LiriWaylandClient/0.9.0.1'.format(self._snap_path)
-                  ),
                   'profile:' + build_profile] + self.options.qbs_options,
                   env=env)
 
@@ -184,4 +169,5 @@ class QbsPlugin(snapcraft.BasePlugin):
                       + self._snap_path + '/usr/local/bin:' \
                       + self._snap_path + '/lib/qt5/bin:' + \
                       os.environ["PATH"]
+        env['LIRI_INCLUDE_PREFIX'] = self._snap_path + '/usr'
         return env
