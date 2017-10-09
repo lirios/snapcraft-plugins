@@ -46,7 +46,7 @@ import snapcraft
 
 
 class QbsPlugin(snapcraft.BasePlugin):
-    _snap_path = '/snap/liri-platform0/current'
+    _snap_path = '/snap/liri-platform-0-9/current'
 
     @classmethod
     def schema(cls):
