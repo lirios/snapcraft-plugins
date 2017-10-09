@@ -119,7 +119,7 @@ class QbsPlugin(snapcraft.BasePlugin):
             self.options.qt_version,
             self.options.qbs_profile)
 
-        qmake = self._snap_path + '/lib/qt5/bin/qmake'
+        qmake = self._snap_path + '/usr/lib/qt5/bin/qmake'
 
         # Setup the Qt profile.
         self.run(['qbs', 'setup-qt', qmake, build_profile], env=env)
@@ -154,14 +154,14 @@ class QbsPlugin(snapcraft.BasePlugin):
             env['QT_SELECT'] = self.options.qt_version
         env['PKG_CONFIG_PATH'] = '{0}/usr/lib/pkgconfig:{0}/usr/lib/x86_64-linux-gnu/pkgconfig:'.format(
             self._snap_path
-        ) + '{0}/lib/qt5/lib/pkgconfig:{0}/lib/pkgconfig'.format(
+        ) + '{0}/usr/lib/qt5/lib/pkgconfig:{0}/lib/pkgconfig'.format(
             self._snap_path
         )
-        env['QTDIR'] = self._snap_path + '/lib/qt5/'
+        env['QTDIR'] = self._snap_path + '/usr/lib/qt5/'
 
-        env['QML_IMPORT_PATH'] = self._snap_path + '/lib/qt5/qml'
-        env['QML2_IMPORT_PATH'] = self._snap_path + '/lib/qt5/qml'
-        env['LD_LIBRARY_PATH'] = self._snap_path + '/lib/qt5/lib:' + \
+        env['QML_IMPORT_PATH'] = self._snap_path + '/usr/lib/qt5/qml'
+        env['QML2_IMPORT_PATH'] = self._snap_path + '/usr/lib/qt5/qml'
+        env['LD_LIBRARY_PATH'] = self._snap_path + '/usr/lib/qt5/lib:' + \
                                  self._snap_path + '/usr/lib:' + \
                                  self._snap_path + '/usr/local/lib:' + \
                                  self._snap_path + '/usr/lib/x86_64-linux-gnu:' +\
@@ -169,7 +169,7 @@ class QbsPlugin(snapcraft.BasePlugin):
         env['LIBRARY_PATH'] = env['LD_LIBRARY_PATH']
         env['PATH'] = self._snap_path + '/usr/bin/:' \
                       + self._snap_path + '/usr/local/bin:' \
-                      + self._snap_path + '/lib/qt5/bin:' + \
+                      + self._snap_path + '/usr/lib/qt5/bin:' + \
                       os.environ["PATH"]
         env['LIRI_INCLUDE_PREFIX'] = self._snap_path + '/usr'
         return env
