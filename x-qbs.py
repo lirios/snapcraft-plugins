@@ -141,7 +141,7 @@ class QbsPlugin(snapcraft.BasePlugin):
         # Run the build.
         self.run(['qbs', '-v',
                   '-d', self.builddir,
-                  '-f', self.sourcedir,
+                  '-f', self.builddir,
                   '-j', str(self.options.qbs_jobs or multiprocessing.cpu_count()),
                   self.options.qbs_build_variant,
                   'qbs.installRoot:' + self.installdir,
