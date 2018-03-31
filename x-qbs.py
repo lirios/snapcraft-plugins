@@ -1,6 +1,6 @@
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright (C) 2017 Tim Süberkrüb <dev@timsueberkrueb.io>
+# Copyright (C) 2018 Tim Süberkrüb <dev@timsueberkrueb.io>
 # Copyright (C) 2017 Dan Chapman <dpniel@ubuntu.com>
 #
 # This program is free software: you can redistribute it and/or modify
@@ -119,7 +119,7 @@ class QbsPlugin(snapcraft.BasePlugin):
             self.options.qt_version,
             self.options.qbs_profile)
 
-        qmake = self._snap_path + '/usr/lib/qt5/bin/qmake'
+        qmake = "{}/usr/lib/x86_64-linux-gnu/qt5/bin/qmake".format(self._snap_path)
 
         # Setup the Qt profile.
         self.run(['qbs', 'setup-qt', qmake, build_profile], env=env)
@@ -139,7 +139,7 @@ class QbsPlugin(snapcraft.BasePlugin):
                      env=env)
 
         # Run the build.
-        self.run(['qbs', '-v',
+        self.run(['qbs',
                   '-d', self.builddir,
                   '-f', self.builddir,
                   '-j', str(self.options.qbs_jobs or multiprocessing.cpu_count()),
@@ -150,6 +150,7 @@ class QbsPlugin(snapcraft.BasePlugin):
 
     def _build_environment(self):
         env = os.environ.copy()
+
         if self.options.qt_version is not None:
             env['QT_SELECT'] = self.options.qt_version
         env['PKG_CONFIG_PATH'] = '{0}/usr/lib/pkgconfig:{0}/usr/lib/x86_64-linux-gnu/pkgconfig:'.format(
@@ -157,19 +158,22 @@ class QbsPlugin(snapcraft.BasePlugin):
         ) + '{0}/usr/lib/qt5/lib/pkgconfig:{0}/lib/pkgconfig'.format(
             self._snap_path
         )
-        env['QTDIR'] = self._snap_path + '/usr/lib/qt5/'
 
-        env['QML_IMPORT_PATH'] = self._snap_path + '/usr/lib/qt5/qml'
-        env['QML2_IMPORT_PATH'] = self._snap_path + '/usr/lib/qt5/qml'
-        env['LD_LIBRARY_PATH'] = self._snap_path + '/usr/lib/qt5/lib:' + \
-                                 self._snap_path + '/usr/lib:' + \
-                                 self._snap_path + '/usr/local/lib:' + \
-                                 self._snap_path + '/usr/lib/x86_64-linux-gnu:' +\
-                                 self._snap_path + '/lib/x86_64-linux-gnu'
+        qt_dir = "{}/usr/lib/x86_64-linux-gnu/qt5".format(self._snap_path)
+
+        env['QTDIR'] = qt_dir
+        env['QML_IMPORT_PATH'] = '{}/qml'.format(qt_dir)
+        env['QML2_IMPORT_PATH'] = '{}/qml'.format(qt_dir)
+        env['LD_LIBRARY_PATH'] = '{}/usr/lib:'.format(self._snap_path) + \
+                                 '{}/usr/local/lib:'.format(self._snap_path) + \
+                                 '{}/usr/lib/x86_64-linux-gnu:'.format(self._snap_path) +\
+                                 '{}/lib/x86_64-linux-gnu'.format(self._snap_path)
         env['LIBRARY_PATH'] = env['LD_LIBRARY_PATH']
-        env['PATH'] = self._snap_path + '/usr/bin/:' \
-                      + self._snap_path + '/usr/local/bin:' \
-                      + self._snap_path + '/usr/lib/qt5/bin:' + \
+        env['PATH'] = '{}/usr/bin/:'.format(self._snap_path) \
+                      + '{}/usr/local/bin:'.format(self._snap_path) \
+                      + '{}/usr/lib/qt5/bin:'.format(self._snap_path) + \
                       os.environ["PATH"]
-        env['LIRI_INCLUDE_PREFIX'] = self._snap_path + '/usr'
+        env['LIRI_INCLUDE_PREFIX'] = '{}/usr'.format(self._snap_path)
+        env['LIRI_LIBRARY_PREFIX'] = '{}/usr'.format(self._snap_path)
+
         return env
